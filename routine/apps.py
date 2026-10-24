@@ -6,7 +6,7 @@ class RoutineConfig(AppConfig):
     name = 'routine'
 
     def ready(self):
-        # Production (Render / Gunicorn) and Local Dev fix
+        # Prevent running during management commands or duplicate processes
         if os.environ.get('RUN_MAIN') == 'false':
             return
         
@@ -18,33 +18,33 @@ class RoutineConfig(AppConfig):
         def check_routine_reminders():
             try:
                 now = datetime.now()
-                # Time object comparison fix
-                current_time = now.time().replace(second=0, microsecond=0)
-                current_time_str = now.strftime('%H:%M')
+                current_time_str = now.strftime('%H:%M')  # e.g., "21:34"
                 
-                # Filter matching tasks
                 tasks = RoutineItem.objects.all()
                 for task in tasks:
-                    # Convert task start_time to HH:MM format safely
-                    task_start_str = ""
-                    if hasattr(task.start_time, 'strftime'):
-                        task_start_str = task.start_time.strftime('%H:%M')
+                    if not task.start_time:
+                        continue
+
+                    # Safe conversion to string HH:MM
+                    if isinstance(task.start_time, str):
+                        task_start_str = task.start_time[:5]
                     else:
-                        task_start_str = str(task.start_time)[:5]
-                    
+                        task_start_str = task.start_time.strftime('%H:%M')
+
+                    # Compare current time with task start time
                     if task_start_str == current_time_str:
-                        # Format 12-hour display time
-                        if hasattr(task.start_time, 'strftime'):
-                            start_12hr = task.start_time.strftime('%I:%M %p')
+                        # 12-hour format string safely
+                        if isinstance(task.start_time, str):
+                            start_12hr = task.start_time
                         else:
-                            start_12hr = str(task.start_time)
+                            start_12hr = task.start_time.strftime('%I:%M %p')
 
                         end_12hr = ""
                         if task.end_time:
-                            if hasattr(task.end_time, 'strftime'):
-                                end_12hr = task.end_time.strftime('%I:%M %p')
+                            if isinstance(task.end_time, str):
+                                end_12hr = task.end_time
                             else:
-                                end_12hr = str(task.end_time)
+                                end_12hr = task.end_time.strftime('%I:%M %p')
 
                         time_text = f"{start_12hr} - {end_12hr}" if end_12hr else start_12hr
                         
