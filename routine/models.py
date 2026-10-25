@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 class RoutineItem(models.Model):
     CATEGORY_CHOICES = [
@@ -15,6 +16,15 @@ class RoutineItem(models.Model):
     end_time = models.TimeField()                 # e.g., 09:30
     description = models.TextField(blank=True, null=True) # Details/Note
     is_completed = models.BooleanField(default=False)
+    updated_at = models.DateTimeField(auto_now=True) # কখন টাস্কটি কমপ্লিট হলো তা ট্র্যাক করার জন্য
 
     def __str__(self):
         return f"[{self.get_category_display()}] {self.title} ({self.start_time.strftime('%I:%M %p')} - {self.end_time.strftime('%I:%M %p')})"
+
+class UserStreak(models.Model):
+    current_streak = models.IntegerField(default=0)
+    best_streak = models.IntegerField(default=0)
+    last_updated = models.DateField(auto_now=True)
+
+    def __str__(self):
+        return f"Streak: 🔥 {self.current_streak} Days"

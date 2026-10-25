@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import RoutineItem
+from django.utils import timezone
+from .models import RoutineItem, UserStreak
 from .telegram import send_telegram_message  # Telegram function import kora holo
 import json
 from django.core.serializers.json import DjangoJSONEncoder
@@ -32,6 +33,23 @@ def routine_view(request):
         return redirect('routine_home')
 
     tasks = RoutineItem.objects.all().order_by('start_time')
+    
+    # --- Productivity Analytics & Streak Calculations ---
+    total_tasks = tasks.count()
+    completed_tasks = tasks.filter(is_completed=True).count()
+    completion_rate = int((completed_tasks / total_tasks * 100) if total_tasks > 0 else 0)
+    
+    # Streak Logic
+    streak_obj, created = UserStreak.objects.get_or_create(pk=1)
+    today = timezone.now().date()
+    if completion_rate >= 80 and streak_obj.last_updated != today:
+        streak_obj.current_streak += 1
+        if streak_obj.current_streak > streak_obj.best_streak:
+            streak_obj.best_streak = streak_obj.current_streak
+        streak_obj.last_updated = today
+        streak_obj.save()
+    # ---------------------------------------------------
+
     tasks_data = [
         {
             'id': task.id,
@@ -42,7 +60,16 @@ def routine_view(request):
     ]
     tasks_json = json.dumps(tasks_data, cls=DjangoJSONEncoder)
 
-    return render(request, 'routine/index.html', {'tasks': tasks, 'tasks_json': tasks_json})
+    context = {
+        'tasks': tasks,
+        'tasks_json': tasks_json,
+        'total_tasks': total_tasks,
+        'completed_tasks': completed_tasks,
+        'completion_rate': completion_rate,
+        'streak_count': streak_obj.current_streak,
+    }
+
+    return render(request, 'routine/index.html', context)
 
 def delete_task(request, task_id):
     task = get_object_or_404(RoutineItem, id=task_id)

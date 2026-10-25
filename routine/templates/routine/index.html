@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Routine Dashboard</title>
-    <!-- Tailwind CSS -->
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -13,135 +14,170 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0f172a',
                         }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
                     }
                 }
             }
         }
     </script>
+    
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font Inter -->
+    <!-- Google Fonts: Inter & JetBrains Mono -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
+        /* Custom Scrollbar for smooth visual aesthetic */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.4);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.7);
+        }
+        
+        /* Smooth scale transitions */
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Checkbox check animation */
+        @keyframes popCheck {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+        .animate-check {
+            animation: popCheck 0.2s ease-in-out forwards;
         }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200 pb-16">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300 antialiased pb-20 selection:bg-emerald-500 selection:text-white">
 
-    <!-- Header Navigation -->
-    <header class="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <!-- Logo & Subtitle -->
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-xl bg-slate-900 dark:bg-emerald-500 text-white dark:text-slate-950 flex items-center justify-center shadow-sm">
-                        <i class="fa-solid font-bold fa-rotate-right text-lg"></i>
-                    </div>
-                    <div>
-                        <div class="flex items-center space-x-2">
-                            <h1 class="text-base font-bold text-slate-900 dark:text-white leading-tight">Smart Routine</h1>
-                            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-300/60 dark:border-emerald-800">PRO</span>
-                        </div>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Discipline Today = Freedom Tomorrow</p>
-                    </div>
+    <!-- Header Navigation Bar -->
+    <header class="sticky top-0 z-30 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+            
+            <!-- Left Branding & Subtitle -->
+            <div class="flex items-center space-x-3.5">
+                <div class="w-10 h-10 rounded-xl bg-slate-900 dark:bg-emerald-500 text-white dark:text-slate-950 flex items-center justify-center shadow-md shadow-slate-900/10 dark:shadow-emerald-500/20 font-bold transition-all">
+                    <i class="fa-solid fa-bolt-lightning text-lg"></i>
                 </div>
-
-                <!-- Right Header Actions -->
-                <div class="flex items-center space-x-3">
-                    <!-- Telegram Connection Badge -->
-                    <div class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-sky-50 dark:bg-sky-950/60 border border-sky-200/80 dark:border-sky-800/80 text-sky-700 dark:text-sky-300 text-xs font-semibold">
-                        <span class="relative flex h-2 w-2">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
-                        </span>
-                        <i class="fa-brands fa-telegram text-sm"></i>
-                        <span>@sijan_routine_bot</span>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-base font-bold text-slate-900 dark:text-white leading-tight">Smart Routine</span>
+                        <span class="text-[10px] font-bold px-1.5 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 rounded">PRO</span>
                     </div>
-
-                    <!-- Theme Toggle -->
-                    <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" title="Toggle Theme">
-                        <i id="themeIcon" class="fa-solid fa-moon"></i>
-                    </button>
-
-                    <!-- Add Task Button -->
-                    <button onclick="openModal()" class="flex items-center space-x-2 px-4 py-2 bg-slate-900 dark:bg-emerald-500 hover:bg-slate-800 dark:hover:bg-emerald-600 text-white dark:text-slate-950 font-semibold rounded-xl text-sm transition-all shadow-sm">
-                        <i class="fa-solid fa-plus"></i>
-                        <span>Add Routine Task</span>
-                    </button>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Discipline Today = Freedom Tomorrow</p>
                 </div>
+            </div>
+
+            <!-- Right Header Action Bar -->
+            <div class="flex items-center space-x-3">
+                <!-- Telegram Bot Integration Status Badge -->
+                <a href="https://t.me/sijan_routine_bot" target="_blank" rel="noopener noreferrer" class="hidden md:flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-sky-50 dark:bg-sky-950/60 border border-sky-200/80 dark:border-sky-800/80 text-sky-700 dark:text-sky-300 text-xs font-semibold hover:bg-sky-100 dark:hover:bg-sky-900/60 transition-all group">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+                    </span>
+                    <i class="fa-brands fa-telegram text-sky-500 group-hover:scale-110 transition-transform"></i>
+                    <span>@sijan_routine_bot</span>
+                </a>
+
+                <!-- Theme Toggle Button -->
+                <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/40" title="Toggle Light/Dark Theme">
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+
+                <!-- Add Task Button -->
+                <button onclick="openModal()" class="flex items-center space-x-2 px-4 py-2 bg-slate-900 dark:bg-emerald-500 hover:bg-slate-800 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-semibold rounded-xl transition-all shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-500/40 text-xs sm:text-sm">
+                    <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
+                    <span>Add Routine Task</span>
+                </button>
             </div>
         </div>
     </header>
 
     <!-- Main Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
 
-        <!-- Fixed High-Contrast Summary Cards Grid -->
+        <!-- Fixed High-Contrast Summary & Analytics Cards Grid (4 Columns) -->
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             
-            <!-- Stat 1: Live Clock -->
-            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 flex flex-col justify-between h-32 shadow-sm hover:shadow-md transition-all">
-                <div class="flex items-center justify-between text-xs font-semibold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
-                    <span>Live Clock</span>
-                    <i class="fa-regular fa-clock text-slate-400 text-sm"></i>
+            <!-- Stat 1: Live Ticking Clock -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-5 flex flex-col justify-between h-32 shadow-sm hover:shadow-md card-hover">
+                <div class="flex items-center justify-between text-[11px] font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
+                    <span>LIVE CLOCK</span>
+                    <i class="fa-regular fa-clock text-slate-400 dark:text-slate-500"></i>
                 </div>
-                <div>
-                    <div id="liveClock" class="text-2xl font-bold text-slate-900 dark:text-white font-mono tracking-tight leading-none">00:00:00 AM</div>
+                <div id="liveClock" class="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white tracking-tight leading-none font-mono">
+                    09:06:54 PM
                 </div>
                 <div id="liveDate" class="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">
                     Sun, Oct 25, 2026
                 </div>
             </div>
 
-            <!-- Stat 2: Active Block -->
-            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 flex flex-col justify-between h-32 shadow-sm hover:shadow-md transition-all">
-                <div class="flex items-center justify-between text-xs font-semibold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
-                    <span>Active Block</span>
-                    <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <!-- Stat 2: Today's Completion Progress Bar -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-5 flex flex-col justify-between h-32 shadow-sm hover:shadow-md card-hover">
+                <div class="flex items-center justify-between text-[11px] font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
+                    <span>TODAY'S PROGRESS</span>
+                    <span id="progressPercentText" class="text-emerald-600 dark:text-emerald-400 font-extrabold text-xs">
+                        0%
+                    </span>
                 </div>
-                <div class="truncate">
-                    <div id="activeBlockTitle" class="text-base font-bold text-emerald-600 dark:text-emerald-400 truncate">
-                        Personal Software Projects
-                    </div>
+                <!-- Dynamic Progress Bar -->
+                <div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden my-auto p-0.5 border border-slate-200/50 dark:border-slate-700/50">
+                    <div id="progressBarFill" class="bg-emerald-500 h-full rounded-full transition-all duration-500 ease-out" style="width: 0%;"></div>
                 </div>
-                <div id="activeBlockSubtitle" class="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">
-                    Focus: Development & Automation
+                <div id="progressSubtext" class="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">
+                    0 of 0 Tasks Completed
                 </div>
             </div>
 
-            <!-- Stat 3: Total Blocks -->
-            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 flex flex-col justify-between h-32 shadow-sm hover:shadow-md transition-all">
-                <div class="flex items-center justify-between text-xs font-semibold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
-                    <span>Total Blocks</span>
-                    <i class="fa-solid fa-layer-group text-slate-400 text-sm"></i>
+            <!-- Stat 3: Streak Counter 🔥 Days -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-5 flex flex-col justify-between h-32 shadow-sm hover:shadow-md card-hover">
+                <div class="flex items-center justify-between text-[11px] font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
+                    <span>STREAK COUNTER</span>
+                    <i class="fa-solid fa-fire text-amber-500 animate-pulse"></i>
                 </div>
-                <div>
-                    <div id="totalBlocksCount" class="text-2xl font-bold text-slate-900 dark:text-white font-mono leading-none">13</div>
+                <div class="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white tracking-tight leading-none flex items-center space-x-2">
+                    <span class="text-amber-500">🔥</span>
+                    <span id="streakCountDisplay">5</span>
+                    <span class="text-lg font-semibold text-slate-600 dark:text-slate-400">Days</span>
                 </div>
                 <div class="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">
-                    Time-blocked schedule
+                    Maintain 80%+ daily target
                 </div>
             </div>
 
             <!-- Stat 4: Telegram Alerts Status -->
-            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 flex flex-col justify-between h-32 shadow-sm hover:shadow-md transition-all">
-                <div class="flex items-center justify-between text-xs font-semibold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
-                    <span>Telegram Alerts</span>
-                    <i class="fa-solid fa-paper-plane text-sky-500 text-sm"></i>
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-5 flex flex-col justify-between h-32 shadow-sm hover:shadow-md card-hover">
+                <div class="flex items-center justify-between text-[11px] font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
+                    <span>TELEGRAM ALERTS</span>
+                    <i class="fa-solid fa-paper-plane text-sky-500"></i>
                 </div>
-                <div>
-                    <div class="text-xl font-bold text-sky-600 dark:text-sky-400 tracking-wide leading-none">ACTIVE</div>
+                <div class="text-2xl lg:text-3xl font-bold text-sky-600 dark:text-sky-400 tracking-tight leading-none">
+                    ACTIVE
                 </div>
                 <div class="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">
                     TimeZone: Asia/Dhaka
@@ -150,272 +186,346 @@
 
         </section>
 
-        <!-- Controls: Header, Filter & Search -->
+        <!-- Control Bar: Title, Search & Category Filters -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-                <h2 class="text-xl font-bold text-slate-900 dark:text-white">Daily Schedule</h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Chronological time blocks with automated Telegram reminders</p>
+                <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Daily Schedule</h2>
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Chronological time blocks with automated Telegram reminders</p>
             </div>
-
+            
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <!-- Search Box -->
+                <!-- Search Input Field -->
                 <div class="relative">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                     <input type="text" id="searchInput" oninput="renderSchedule()" placeholder="Search tasks..." 
-                        class="w-full sm:w-60 pl-9 pr-4 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/30 dark:focus:ring-emerald-500/20 text-slate-800 dark:text-slate-200">
+                           class="w-full sm:w-64 pl-9 pr-4 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-500/30 text-slate-900 dark:text-slate-100 placeholder-slate-400 transition-all shadow-sm">
                 </div>
 
-                <!-- Category Filters -->
-                <div class="flex items-center p-1 bg-slate-200/60 dark:bg-slate-800/80 rounded-xl text-xs overflow-x-auto">
-                    <button onclick="setFilter('All')" class="filter-btn px-3 py-1.5 rounded-lg font-semibold transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm" data-category="All">All</button>
-                    <button onclick="setFilter('Morning')" class="filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all" data-category="Morning">Morning</button>
-                    <button onclick="setFilter('Midday')" class="filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all" data-category="Midday">Midday</button>
-                    <button onclick="setFilter('Evening')" class="filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all" data-category="Evening">Evening</button>
-                    <button onclick="setFilter('Agency')" class="filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all" data-category="Agency">Agency</button>
+                <!-- Category Pills Filters -->
+                <div class="flex items-center space-x-1 p-1 bg-slate-200/70 dark:bg-slate-800/80 rounded-xl overflow-x-auto border border-slate-200 dark:border-slate-700/50">
+                    <button onclick="setFilter('ALL')" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm" data-category="ALL">All</button>
+                    <button onclick="setFilter('MORNING')" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all" data-category="MORNING">Morning</button>
+                    <button onclick="setFilter('MIDDAY')" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all" data-category="MIDDAY">Midday</button>
+                    <button onclick="setFilter('EVENING')" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all" data-category="EVENING">Evening</button>
+                    <button onclick="setFilter('AGENCY')" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all" data-category="AGENCY">Agency</button>
                 </div>
             </div>
         </div>
 
         <!-- Routine Task List Container -->
         <div id="taskList" class="space-y-3">
-            <!-- Dynamic task items injected via JavaScript -->
+            <!-- Dynamic task blocks will be rendered here via JS -->
         </div>
 
     </main>
 
-    <!-- Modal for Adding New Task -->
-    <div id="taskModal" class="fixed inset-0 bg-slate-950/50 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200 p-4">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-xl transform scale-95 transition-transform duration-200" id="modalContainer">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
-                <h3 class="text-base font-bold text-slate-900 dark:text-white">Add New Routine Block</h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg">
+    <!-- Modal for Adding New Routine Task -->
+    <div id="taskModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center hidden opacity-0 transition-opacity duration-200 p-4 z-50">
+        <div id="modalContainer" class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-2xl scale-95 transition-transform duration-200">
+            
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-4">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-calendar-plus text-emerald-500"></i>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Add New Routine Block</h3>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg transition-colors">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <form id="addTaskForm" onsubmit="handleAddTask(event)" class="mt-4 space-y-4">
+            <form id="addRoutineForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Task Title</label>
-                    <input type="text" id="taskTitle" required placeholder="e.g. Diploma Studies & Web Design" class="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white">
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Task Title</label>
+                    <input type="text" id="taskTitle" name="title" required placeholder="e.g., Diploma Studies & Web Design" 
+                           class="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-900 dark:text-white placeholder-slate-400">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Start Time</label>
-                        <input type="time" id="startTime" required class="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white">
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Start Time</label>
+                        <input type="time" id="startTime" name="start_time" required 
+                               class="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-900 dark:text-white">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">End Time</label>
-                        <input type="time" id="endTime" required class="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white">
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">End Time</label>
+                        <input type="time" id="endTime" name="end_time" required 
+                               class="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-900 dark:text-white">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Category</label>
-                    <select id="taskCategory" class="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white">
-                        <option value="Morning">Morning Routine & Academic</option>
-                        <option value="Midday">Midday & Personal Projects</option>
-                        <option value="Evening">Evening & Agency Work</option>
-                        <option value="Agency">Agency Operations</option>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Category</label>
+                    <select id="taskCategory" name="category" 
+                            class="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-900 dark:text-white">
+                        <option value="MORNING">1. Morning Routine & Academic Focus</option>
+                        <option value="MIDDAY">2. Midday Projects & Rest</option>
+                        <option value="EVENING">3. Evening Recreation & HSC Studies</option>
+                        <option value="AGENCY">4. Agency & Business Operations</option>
+                        <option value="HEALTH">5. Wind Down, Health & Personal Care</option>
                     </select>
                 </div>
 
-                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Description / Notes (Optional)</label>
+                    <textarea id="taskDescription" name="description" rows="2" placeholder="Specific topics or targets for this block..." 
+                              class="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-900 dark:text-white placeholder-slate-400"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                     <button type="button" onclick="closeModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">Cancel</button>
-                    <button type="submit" class="px-4 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-colors shadow-sm">Save Task</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-semibold bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl transition-colors shadow-sm">Save Task</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- JavaScript Application Logic -->
+    <!-- Application JavaScript Logic -->
     <script>
-        // Initial Mock Tasks Data
-        const defaultTasks = [
+        // Initial seed tasks in pure JavaScript format
+        const initialSeedTasks = [
             {
                 id: 1,
-                category: "Morning",
-                categoryLabel: "1. Morning Routine & Academic Focus",
+                category: "MORNING",
+                categorylabel: "1. Morning Routine & Academic Focus",
                 title: "Wake up, freshen up, and recite Surah Yasin.",
-                startTime: "06:00 AM",
-                endTime: "06:15 AM",
-                completed: false
+                startime: "06:00 AM",
+                endtime: "06:15 AM",
+                completed: true
             },
             {
                 id: 2,
-                category: "Morning",
-                categoryLabel: "1. Morning Routine & Academic Focus",
+                category: "MORNING",
+                categorylabel: "1. Morning Routine & Academic Focus",
                 title: "Prepare and have a healthy, easy breakfast (eggs, bread, oats, banana).",
-                startTime: "06:15 AM",
-                endTime: "07:00 AM",
-                completed: false
+                startime: "06:15 AM",
+                endtime: "07:00 AM",
+                completed: true
             },
             {
                 id: 3,
-                category: "Morning",
-                categoryLabel: "1. Morning Routine & Academic Focus",
+                category: "MORNING",
+                categorylabel: "1. Morning Routine & Academic Focus",
                 title: "Diploma Studies (Data Structure & Algorithm + Web Design).",
-                startTime: "07:00 AM",
-                endTime: "09:30 AM",
-                completed: false
+                startime: "07:00 AM",
+                endtime: "09:30 AM",
+                completed: true
             },
             {
                 id: 4,
-                category: "Morning",
-                categoryLabel: "1. Morning Routine & Academic Focus",
+                category: "MORNING",
+                categorylabel: "1. Morning Routine & Academic Focus",
                 title: "Lunch/breakfast with mother, conversation & short relaxation.",
-                startTime: "09:30 AM",
-                endTime: "10:30 AM",
-                completed: false
+                startime: "09:30 AM",
+                endtime: "10:30 AM",
+                completed: true
             },
             {
                 id: 5,
-                category: "Midday",
-                categoryLabel: "2. Personal Software Projects",
+                category: "MIDDAY",
+                categorylabel: "2. Personal Software Projects",
                 title: "SaaS App & Personal Bot Development / Automation Work.",
-                startTime: "10:30 AM",
-                endTime: "01:00 PM",
+                startime: "10:30 AM",
+                endtime: "01:00 PM",
                 completed: false
             },
             {
                 id: 6,
-                category: "Midday",
-                categoryLabel: "2. Personal Software Projects",
+                category: "MIDDAY",
+                categorylabel: "2. Personal Software Projects",
                 title: "Shower, Zuhur Prayer, Lunch, Rest & Nap.",
-                startTime: "01:00 PM",
-                endTime: "03:30 PM",
+                startime: "01:00 PM",
+                endtime: "03:30 PM",
                 completed: false
             },
             {
                 id: 7,
-                category: "Evening",
-                categoryLabel: "3. Agency Work & Client Communication",
+                category: "EVENING",
+                categorylabel: "3. Evening Recreation & HSC Studies",
                 title: "Asr Prayer, Evening Snack, Quick Walk or Fresh Air.",
-                startTime: "03:30 PM",
-                endTime: "04:30 PM",
+                startime: "03:30 PM",
+                endtime: "04:30 PM",
                 completed: false
             },
             {
                 id: 8,
-                category: "Agency",
-                categoryLabel: "3. Agency Work & Client Communication",
+                category: "AGENCY",
+                categorylabel: "4. Agency Work & Client Communication",
                 title: "Client project design, client communications, revisions & outreach.",
-                startTime: "04:30 PM",
-                endTime: "07:00 PM",
+                startime: "04:30 PM",
+                endtime: "07:00 PM",
                 completed: false
             }
         ];
 
-        let tasks = JSON.parse(localStorage.getItem('smart_routine_tasks')) || defaultTasks;
-        let activeFilter = 'All';
+        let activeFilter = 'ALL';
+        let tasks = JSON.parse(localStorage.getItem('smart_routine_tasks')) || initialSeedTasks;
 
-        // Ticking Live Clock Function
+        // 1. Live Clock & Date Update Engine
         function updateClock() {
             const now = new Date();
             const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
             const dateOptions = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-
+            
             document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-US', timeOptions);
             document.getElementById('liveDate').textContent = now.toLocaleDateString('en-US', dateOptions);
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Render Routine Cards
+        // 2. Real-time Analytics & Progress Bar Calculation
+        function updateAnalytics() {
+            const total = tasks.length;
+            const completedCount = tasks.filter(t => t.completed).length;
+            const percent = total > 0 ? Math.round((completedCount / total) * 100) : 0;
+
+            const progressPercentText = document.getElementById('progressPercentText');
+            if (progressPercentText) progressPercentText.textContent = `${percent}%`;
+
+            const progressBarFill = document.getElementById('progressBarFill');
+            if (progressBarFill) progressBarFill.style.width = `${percent}%`;
+
+            const progressSubtext = document.getElementById('progressSubtext');
+            if (progressSubtext) progressSubtext.textContent = `${completedCount} of ${total} Tasks Completed`;
+        }
+
+        // 3. Main Schedule Renderer
         function renderSchedule() {
             const taskList = document.getElementById('taskList');
-            const searchVal = document.getElementById('searchInput').value.toLowerCase();
             taskList.innerHTML = '';
+            
+            const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
 
-            const filteredTasks = tasks.filter(task => {
-                const matchesFilter = (activeFilter === 'All') || (task.category === activeFilter);
-                const matchesSearch = task.title.toLowerCase().includes(searchVal) || task.categoryLabel.toLowerCase().includes(searchVal);
-                return matchesFilter && matchesSearch;
+            const filteredTasks = tasks.filter(t => {
+                const matchesCategory = (activeFilter === 'ALL') || (t.category === activeFilter);
+                const matchesSearch = t.title.toLowerCase().includes(searchValue) || 
+                                      t.categorylabel.toLowerCase().includes(searchValue);
+                return matchesCategory && matchesSearch;
             });
-
-            document.getElementById('totalBlocksCount').textContent = tasks.length;
 
             if (filteredTasks.length === 0) {
                 taskList.innerHTML = `
-                    <div class="text-center py-12 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800">
-                        <i class="fa-solid fa-calendar-xmark text-3xl text-slate-300 dark:text-slate-600 mb-2"></i>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">No routine tasks found</p>
+                    <div class="text-center py-16 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                        <i class="fa-solid fa-calendar-xmark text-4xl text-slate-300 dark:text-slate-600 mb-3"></i>
+                        <p class="text-sm font-semibold text-slate-600 dark:text-slate-400">No routine tasks found</p>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Try resetting your filter or search criteria</p>
                     </div>
                 `;
+                updateAnalytics();
                 return;
             }
 
             filteredTasks.forEach(task => {
                 const card = document.createElement('div');
-                card.className = `group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/90 p-4 sm:p-5 flex items-start sm:items-center justify-between transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md ${task.completed ? 'opacity-50' : ''}`;
-
+                card.className = `bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-4 sm:p-5 flex items-center justify-between transition-all duration-300 hover:shadow-md dark:hover:border-slate-700 ${ task.completed ? 'opacity-65 dark:opacity-50' : '' }`;
+                
                 card.innerHTML = `
-                    <div class="flex items-start sm:items-center space-x-3 sm:space-x-4 flex-1 pr-4">
-                        <!-- Custom Checkbox -->
-                        <button onclick="toggleTask(${task.id})" class="mt-1 sm:mt-0 flex-shrink-0 w-5 h-5 rounded-md border ${task.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 dark:border-slate-700 hover:border-emerald-500'} flex items-center justify-center transition-colors">
-                            ${task.completed ? '<i class="fa-solid fa-check text-xs"></i>' : ''}
+                    <div class="flex items-start space-x-4 flex-1 pr-4">
+                        <button onclick="toggleTask(${task.id})" class="mt-0.5 w-5 h-5 rounded-md border ${ task.completed ? 'bg-emerald-500 border-emerald-500 text-slate-950 animate-check' : 'border-slate-300 dark:border-slate-600 hover:border-emerald-500' } flex items-center justify-center transition-all flex-shrink-0 focus:outline-none">
+                            ${ task.completed ? '<i class="fa-solid fa-check text-xs font-bold"></i>' : '' }
                         </button>
 
-                        <div class="space-y-1">
-                            <!-- Category Badge -->
-                            <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/60">
-                                ${task.categoryLabel}
+                        <div class="space-y-1.5 flex-1">
+                            <span class="inline-block text-[10px] sm:text-[11px] font-semibold px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                ${task.categorylabel}
                             </span>
-                            <!-- Task Title -->
-                            <p class="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100 ${task.completed ? 'line-through text-slate-400 dark:text-slate-500' : ''}">
+                            <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 ${ task.completed ? 'line-through text-slate-400 dark:text-slate-500' : '' }">
                                 ${task.title}
                             </p>
                         </div>
                     </div>
 
-                    <!-- Right Block: Time Badge & Action Button -->
-                    <div class="flex items-center space-x-3 flex-shrink-0">
-                        <div class="bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 font-mono px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700 text-xs font-bold flex items-center space-x-1.5">
+                    <div class="flex items-center space-x-2.5 sm:space-x-3 flex-shrink-0">
+                        <div class="bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
                             <i class="fa-regular fa-clock text-slate-400 text-xs"></i>
-                            <span>${task.startTime} – ${task.endTime}</span>
+                            <span>${task.startime} - ${task.endtime}</span>
                         </div>
-                        <button onclick="deleteTask(${task.id})" class="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-rose-500 p-2 transition-all" title="Delete Task">
+                        <button onclick="deleteTask(${task.id})" class="p-2 text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors focus:outline-none" title="Delete Routine Block">
                             <i class="fa-regular fa-trash-can text-sm"></i>
                         </button>
                     </div>
                 `;
                 taskList.appendChild(card);
             });
+
+            updateAnalytics();
         }
 
-        // Toggle Task Completion State
+        // 4. Task Toggle Completion State
         function toggleTask(id) {
             tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
-            saveTasks();
+            saveTasksToStorage();
             renderSchedule();
         }
 
-        // Delete Task
+        // 5. Delete Task Logic
         function deleteTask(id) {
             tasks = tasks.filter(t => t.id !== id);
-            saveTasks();
+            saveTasksToStorage();
             renderSchedule();
         }
 
-        // Filter Category Handler
+        // 6. Category Filter Handler
         function setFilter(cat) {
             activeFilter = cat;
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 if (btn.dataset.category === cat) {
-                    btn.className = 'filter-btn px-3 py-1.5 rounded-lg font-semibold transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm';
+                    btn.className = 'filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm';
                 } else {
-                    btn.className = 'filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all';
+                    btn.className = 'filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all';
                 }
             });
             renderSchedule();
         }
 
-        // Save Tasks to localStorage
-        function saveTasks() {
+        // 7. LocalStorage Sync
+        function saveTasksToStorage() {
             localStorage.setItem('smart_routine_tasks', JSON.stringify(tasks));
         }
 
-        // Modal Operations
+        // 8. Format 24hr Time to 12hr AM/PM
+        function format12Hour(time24) {
+            if (!time24) return '';
+            const [h, m] = time24.split(':');
+            let hours = parseInt(h, 10);
+            const suffix = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            return `${hours.toString().padStart(2, '0')}:${m} ${suffix}`;
+        }
+
+        // 9. Client-side New Task Handler
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const title = document.getElementById('taskTitle').value;
+            const startTime24 = document.getElementById('startTime').value;
+            const endTime24 = document.getElementById('endTime').value;
+            const category = document.getElementById('taskCategory').value;
+
+            const categoryLabels = {
+                'MORNING': '1. Morning Routine & Academic Focus',
+                'MIDDAY': '2. Personal Software Projects',
+                'EVENING': '3. Evening Recreation & HSC Studies',
+                'AGENCY': '4. Agency Work & Client Communication',
+                'HEALTH': '5. Wind Down, Health & Personal Care'
+            };
+
+            const newTask = {
+                id: Date.now(),
+                category: category,
+                categorylabel: categoryLabels[category] || 'Routine Task',
+                title: title,
+                startime: format12Hour(startTime24),
+                endtime: format12Hour(endTime24),
+                completed: false
+            };
+
+            tasks.push(newTask);
+            saveTasksToStorage();
+            renderSchedule();
+            closeModal();
+            document.getElementById('addRoutineForm').reset();
+        }
+
+        // 10. Modal Window Operations
         function openModal() {
             const modal = document.getElementById('taskModal');
             const container = document.getElementById('modalContainer');
@@ -438,78 +548,37 @@
             }, 200);
         }
 
-        // Format 24hr time to 12hr AM/PM
-        function formatTime12(time24) {
-            const [h, m] = time24.split(':');
-            const hours = parseInt(h, 10);
-            const suffix = hours >= 12 ? 'PM' : 'AM';
-            const formattedHours = hours % 12 || 12;
-            return `${formattedHours.toString().padStart(2, '0')}:${m} ${suffix}`;
-        }
-
-        // Handle Form Submit
-        function handleAddTask(e) {
-            e.preventDefault();
-            const title = document.getElementById('taskTitle').value;
-            const startRaw = document.getElementById('startTime').value;
-            const endRaw = document.getElementById('endTime').value;
-            const category = document.getElementById('taskCategory').value;
-
-            const categoryLabels = {
-                'Morning': '1. Morning Routine & Academic Focus',
-                'Midday': '2. Personal Software Projects',
-                'Evening': '3. Agency Work & Client Communication',
-                'Agency': '3. Agency Work & Client Communication'
-            };
-
-            const newTask = {
-                id: Date.now(),
-                category: category,
-                categoryLabel: categoryLabels[category] || 'Routine Task',
-                title: title,
-                startTime: formatTime12(startRaw),
-                endTime: formatTime12(endRaw),
-                completed: false
-            };
-
-            tasks.push(newTask);
-            saveTasks();
-            renderSchedule();
-            closeModal();
-            document.getElementById('addTaskForm').reset();
-        }
-
-        // Theme Toggle Handler
+        // 11. Theme Switcher (Light / Dark Mode)
         function toggleTheme() {
             const html = document.documentElement;
             const icon = document.getElementById('themeIcon');
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
                 html.classList.add('light');
-                icon.className = 'fa-solid fa-moon';
+                icon.className = 'fa-solid fa-moon text-sm';
                 localStorage.setItem('theme', 'light');
             } else {
                 html.classList.remove('light');
                 html.classList.add('dark');
-                icon.className = 'fa-solid fa-sun';
+                icon.className = 'fa-solid fa-sun text-sm text-amber-400';
                 localStorage.setItem('theme', 'dark');
             }
         }
 
-        // Load persisted theme preference
+        // Initial Theme Load
         (function initTheme() {
             const savedTheme = localStorage.getItem('theme') || 'light';
             const icon = document.getElementById('themeIcon');
             if (savedTheme === 'dark') {
                 document.documentElement.classList.add('dark');
-                icon.className = 'fa-solid fa-sun';
+                if(icon) icon.className = 'fa-solid fa-sun text-sm text-amber-400';
             } else {
                 document.documentElement.classList.remove('dark');
-                icon.className = 'fa-solid fa-moon';
+                if(icon) icon.className = 'fa-solid fa-moon text-sm';
             }
         })();
 
-        // Initial Page Render
+        // Render initial view
         renderSchedule();
     </script>
 </body>
