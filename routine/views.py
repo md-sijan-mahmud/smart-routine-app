@@ -26,9 +26,9 @@ def routine_view(request):
         start_12hr = task.start_time.strftime('%I:%M %p') if task.start_time else ""
         end_12hr = task.end_time.strftime('%I:%M %p') if task.end_time else ""
 
-        # Immediate Test Notification: Task add hoilei Telegram-e message jabe
+        # Immediate Notification with Buttons: Task add hoilei Telegram-e buttonসহ message jabe
         msg = f"📌 *New Routine Task Added!*\n\n*Task:* {title}\n*Time:* {start_12hr} - {end_12hr}\n*Category:* {category}"
-        send_telegram_message(msg)
+        send_telegram_message(msg, task_id=task.id) # ekhane task_id pass kora holo
 
         return redirect('routine_home')
 
@@ -75,3 +75,31 @@ def delete_task(request, task_id):
     task = get_object_or_404(RoutineItem, id=task_id)
     task.delete()
     return redirect('routine_home')
+
+# --- TELEGRAM WEBHOOK VIEW (Button Click Handler) ---
+@csrf_exempt
+def telegram_webhook(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            
+            # Check if user clicked an inline button
+            if 'callback_query' in data:
+                callback_query = data['callback_query']
+                callback_data = callback_query['data'] # Example: "done_5" ba "snooze_5"
+                
+                action, task_id = callback_data.split('_')
+                task = RoutineItem.objects.filter(id=task_id).first()
+                
+                if task:
+                    if action == 'done':
+                        task.is_completed = True
+                        task.save()
+                    elif action == 'snooze':
+                        # Ekhane chaile snooze logic add korte paren
+                        pass
+        except Exception as e:
+            print(f"Webhook Error: {e}")
+            
+        return JsonResponse({"status": "ok"})
+    return JsonResponse({"status": "error"}, status=400)
