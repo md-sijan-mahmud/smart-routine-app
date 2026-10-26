@@ -424,52 +424,51 @@
                 updateAnalytics();
                 return;
             }
+            filteredTasks.forEach(task => {
+                const card = document.createElement('div');
+                card.className = `bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-4 sm:p-5 flex items-center justify-between transition-all duration-300 hover:shadow-md dark:hover:border-slate-700 ${ task.completed ? 'opacity-65 dark:opacity-50' : '' }`;
 
-                filteredTasks.forEach(task => {
-                    const card = document.createElement('div');
-                    card.className = `bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-4 sm:p-5 flex items-center justify-between transition-all duration-300 hover:shadow-md dark:hover:border-slate-700 ${ task.completed ? 'opacity-65 dark:opacity-50' : '' }`;
+                const priorityEmoji = task.priority === 'HIGH' ? '🔴 High' : task.priority === 'LOW' ? '🟢 Low' : '🟡 Med';
 
-                    const priorityEmoji = task.priority === 'HIGH' ? '🔴 High' : task.priority === 'LOW' ? '🟢 Low' : '🟡 Med';
-    
-                    card.innerHTML = `
-                        <div class="flex items-start space-x-4 flex-1 pr-4">
-                            <button onclick="toggleTask(${task.id})" class="mt-0.5 w-5 h-5 rounded-md border ${ task.completed ? 'bg-emerald-500 border-emerald-500 text-slate-950 animate-check' : 'border-slate-300 dark:border-slate-600 hover:border-emerald-500' } flex items-center justify-center transition-all flex-shrink-0 focus:outline-none">
-                                ${ task.completed ? '<i class="fa-solid fa-check text-xs font-bold"></i>' : '' }
-                            </button>
+                card.innerHTML = `
+                    <div class="flex items-center space-x-4 flex-1 pr-4">
+                        <button onclick="toggleTask(${task.id})" class="w-5 h-5 rounded-md border ${ task.completed ? 'bg-emerald-500 border-emerald-500 text-slate-950 animate-check' : 'border-slate-300 dark:border-slate-600 hover:border-emerald-500' } flex items-center justify-center transition-all flex-shrink-0 focus:outline-none">
+                            ${ task.completed ? '<i class="fa-solid fa-check text-xs font-bold"></i>' : '' }
+                        </button>
 
-                            <div class="space-y-1.5 flex-1">
-                                <span class="inline-block text-[10px] sm:text-[11px] font-semibold px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        <div class="space-y-1 flex-1">
+                            <div class="flex items-center space-x-2">
+                                <span class="inline-block text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                     ${task.categorylabel}
                                 </span>
-                                <!-- 🎯 Priority Tag Badge -->
                                 <span class="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200/50">
                                     ${priorityEmoji}
                                 </span>
                             </div>
-                                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 ${ task.completed ? 'line-through text-slate-400 dark:text-slate-500' : '' }">
-                                ${task.title}                                    
-                                </p>
-                            </div>
+                            <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 ${ task.completed ? 'line-through text-slate-400 dark:text-slate-500' : '' }">
+                                ${task.title}
+                            </p>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="flex items-center space-x-2.5 sm:space-x-3 flex-shrink-0">
-                            <!-- 📲 Telegram Send Button -->
-                            <a href="/send-telegram/${task.id}/" class="p-2 text-sky-500 hover:bg-sky-50 dark:hover:bg-sky-950/50 rounded-xl transition-colors" title="Send to Telegram">
-                                <i class="fa-solid fa-paper-plane text-sm"></i>
-                            </a>
+        <div class="flex items-center space-x-2.5 sm:space-x-3 flex-shrink-0">
+            <a href="/send-telegram/${task.id}/" class="p-2 text-sky-500 hover:bg-sky-50 dark:hover:bg-sky-950/50 rounded-xl transition-colors" title="Send to Telegram">
+                <i class="fa-solid fa-paper-plane text-sm"></i>
+            </a>
 
-                            <div class="bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
-                                <i class="fa-regular fa-clock text-slate-400 text-xs"></i>
-                                <span>${task.startime} - ${task.endtime}</span>
-                            </div>
-            
-                            <button onclick="deleteTask(${task.id})" class="p-2 text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors focus:outline-none" title="Delete Routine Block">
-                                <i class="fa-regular fa-trash-can text-sm"></i>
-                            </button>
-                        </div>
-                    `;
-                    taskList.appendChild(card);
-                });
+            <div class="bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                <i class="fa-regular fa-clock text-slate-400 text-xs"></i>
+                <span>${task.startime} - ${task.endtime}</span>
+            </div>
+
+            <button onclick="deleteTask(${task.id})" class="p-2 text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors focus:outline-none" title="Delete Routine Block">
+                <i class="fa-regular fa-trash-can text-sm"></i>
+            </button>
+        </div>
+    `;
+    taskList.appendChild(card);
+});
 
             updateAnalytics();
         }
