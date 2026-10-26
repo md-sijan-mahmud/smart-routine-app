@@ -8,7 +8,6 @@ def send_telegram_message(message, task_id=None):
     payload = {
         "chat_id": CHAT_ID,
         "text": message,
-        "parse_mode": "Markdown"
     }
     
     # Jodi task_id dewa thake, tahole interactive buttons (Mark as Done & Snooze) add korbe
