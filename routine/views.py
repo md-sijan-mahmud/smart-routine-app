@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from .models import RoutineItem, UserStreak
 from .telegram import send_telegram_message  # Telegram function import kora holo
 import json
@@ -74,6 +76,18 @@ def routine_view(request):
 def delete_task(request, task_id):
     task = get_object_or_404(RoutineItem, id=task_id)
     task.delete()
+    return redirect('routine_home')
+
+# --- Purono task-gulo theke Telegram-e message pathanor jonno function ---
+def send_task_telegram(request, task_id):
+    task = get_object_or_404(RoutineItem, id=task_id)
+    
+    start_12hr = task.start_time.strftime('%I:%M %p') if task.start_time else ""
+    end_12hr = task.end_time.strftime('%I:%M %p') if task.end_time else ""
+    
+    msg = f"📌 *Routine Task Reminder!*\n\n*Task:* {task.title}\n*Time:* {start_12hr} - {end_12hr}\n*Category:* {task.get_category_display()}"
+    send_telegram_message(msg, task_id=task.id)
+    
     return redirect('routine_home')
 
 # --- TELEGRAM WEBHOOK VIEW (Button Click Handler) ---
