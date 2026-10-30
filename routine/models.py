@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.utils import timezone
 
 class RoutineItem(models.Model):
@@ -10,10 +11,14 @@ class RoutineItem(models.Model):
         ('HEALTH', '5. Wind Down, Health & Personal Care'),
     ]
 
-    title = models.CharField(max_length=200)       # e.g., "Diploma Studies"
+    # Multi-user support-er jonno user field add kora holo
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    
+    title = models.CharField(max_length=200) # e.g., "Diploma Studies"
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
-    start_time = models.TimeField()               # e.g., 07:00
-    end_time = models.TimeField()                 # e.g., 09:30
+    priority = models.CharField(max_length=20, default='MEDIUM') # Priority feature-er jonno
+    start_time = models.TimeField() # e.g., 07:00
+    end_time = models.TimeField() # e.g., 09:30
     description = models.TextField(blank=True, null=True) # Details/Note
     is_completed = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True) # কখন টাস্কটি কমপ্লিট হলো তা ট্র্যাক করার জন্য
@@ -22,6 +27,8 @@ class RoutineItem(models.Model):
         return f"[{self.get_category_display()}] {self.title} ({self.start_time.strftime('%I:%M %p')} - {self.end_time.strftime('%I:%M %p')})"
 
 class UserStreak(models.Model):
+    # Protthek user-er nijeder streak track korar jonno user field
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     current_streak = models.IntegerField(default=0)
     best_streak = models.IntegerField(default=0)
     last_updated = models.DateField(auto_now=True)

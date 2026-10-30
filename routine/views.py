@@ -2,23 +2,60 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import RoutineItem, UserStreak
 from .telegram import send_telegram_message  # Telegram function import kora holo
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 
+# --- 1. Register View ---
+def register_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('routine_home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'routine/register.html', {'form': form})
+
+# --- 2. Login View ---
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('routine_home')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'routine/login.html', {'form': form})
+
+# --- 3. Logout View ---
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+# --- 4. Main Routine Dashboard View (Multi-user Secured) ---
+@login_required(login_url='login')
 def routine_view(request):
     if request.method == 'POST':
         title = request.POST.get('title')
         category = request.POST.get('category')
+        priority = request.POST.get('priority', 'MEDIUM')
         start_time = request.POST.get('start_time')
         end_time = request.POST.get('end_time')
         description = request.POST.get('description', '')
 
-        # Task toiri kora
+        # Task toiri kora ebong logged-in user assign kora
         task = RoutineItem.objects.create(
+            user=request.user,
             title=title,
             category=category,
+            priority=priority,
             start_time=start_time,
             end_time=end_time,
             description=description
@@ -28,21 +65,22 @@ def routine_view(request):
         start_12hr = task.start_time.strftime('%I:%M %p') if task.start_time else ""
         end_12hr = task.end_time.strftime('%I:%M %p') if task.end_time else ""
 
-        # Immediate Notification with Buttons: Task add hoilei Telegram-e buttonসহ message jabe
+        # Immediate Notification with Buttons
         msg = f"📌 *New Routine Task Added!*\n\n*Task:* {title}\n*Time:* {start_12hr} - {end_12hr}\n*Category:* {category}"
-        send_telegram_message(msg, task_id=task.id) # ekhane task_id pass kora holo
+        send_telegram_message(msg, task_id=task.id)
 
         return redirect('routine_home')
 
-    tasks = RoutineItem.objects.all().order_by('start_time')
+    # Shudhu logged-in user-er task-gulo fetch korbe
+    tasks = RoutineItem.objects.filter(user=request.user).order_by('start_time')
     
-    # --- Productivity Analytics & Streak Calculations ---
+    # --- Productivity Analytics & Streak Calculations (User-specific) ---
     total_tasks = tasks.count()
     completed_tasks = tasks.filter(is_completed=True).count()
     completion_rate = int((completed_tasks / total_tasks * 100) if total_tasks > 0 else 0)
     
-    # Streak Logic
-    streak_obj, created = UserStreak.objects.get_or_create(pk=1)
+    # Streak Logic for current user
+    streak_obj, created = UserStreak.objects.get_or_create(user=request.user)
     today = timezone.now().date()
     if completion_rate >= 80 and streak_obj.last_updated != today:
         streak_obj.current_streak += 1
@@ -50,13 +88,12 @@ def routine_view(request):
             streak_obj.best_streak = streak_obj.current_streak
         streak_obj.last_updated = today
         streak_obj.save()
-    # ---------------------------------------------------
 
     tasks_data = [
         {
             'id': task.id,
             'title': task.title,
-            'start_time': task.start_time.strftime('%H:%M')
+            'start_time': task.start_time.strftime('%H:%M') if task.start_time else ""
         }
         for task in tasks
     ]
@@ -73,14 +110,15 @@ def routine_view(request):
 
     return render(request, 'routine/index.html', context)
 
+@login_required(login_url='login')
 def delete_task(request, task_id):
-    task = get_object_or_404(RoutineItem, id=task_id)
+    task = get_object_or_404(RoutineItem, id=task_id, user=request.user)
     task.delete()
     return redirect('routine_home')
 
-# --- Purono task-gulo theke Telegram-e message pathanor jonno function ---
+@login_required(login_url='login')
 def send_task_telegram(request, task_id):
-    task = get_object_or_404(RoutineItem, id=task_id)
+    task = get_object_or_404(RoutineItem, id=task_id, user=request.user)
     
     start_12hr = task.start_time.strftime('%I:%M %p') if task.start_time else ""
     end_12hr = task.end_time.strftime('%I:%M %p') if task.end_time else ""
@@ -97,10 +135,9 @@ def telegram_webhook(request):
         try:
             data = json.loads(request.body)
             
-            # Check if user clicked an inline button
             if 'callback_query' in data:
                 callback_query = data['callback_query']
-                callback_data = callback_query['data'] # Example: "done_5" ba "snooze_5"
+                callback_data = callback_query['data']
                 
                 action, task_id = callback_data.split('_')
                 task = RoutineItem.objects.filter(id=task_id).first()
@@ -110,7 +147,6 @@ def telegram_webhook(request):
                         task.is_completed = True
                         task.save()
                     elif action == 'snooze':
-                        # Ekhane chaile snooze logic add korte paren
                         pass
         except Exception as e:
             print(f"Webhook Error: {e}")
