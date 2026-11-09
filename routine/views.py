@@ -153,3 +153,24 @@ def telegram_webhook(request):
             
         return JsonResponse({"status": "ok"})
     return JsonResponse({"status": "error"}, status=400)
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        # ইউজারনেম বা ইমেইল আপডেট লজিক এখানে যুক্ত হবে
+        user = request.user
+        user.username = request.POST.get('username', user.username)
+        user.email = request.POST.get('email', user.email)
+        user.save()
+        return redirect('dashboard')
+    return render(request, 'routine/edit_profile.html')
+
+@login_required
+def activity_stats(request):
+    # এখানে ইউজারের টাস্ক কাউন্ট, স্ট্রইক বা স্ট্যাটস ক্যালকুলেট করে পাস করা যাবে
+    context = {
+        'total_tasks': 8, # উদাহরণস্বরূপ
+        'completed_tasks': 4,
+        'streak_days': 5,
+    }
+    return render(request, 'routine/activity_stats.html', context)

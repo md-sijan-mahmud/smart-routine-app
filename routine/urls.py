@@ -1,3 +1,4 @@
+from django import views
 from django.urls import path
 from .views import routine_view, delete_task, telegram_webhook, send_task_telegram, login_view, register_view, logout_view
 
@@ -9,4 +10,6 @@ urlpatterns = [
     path('delete/<int:task_id>/', delete_task, name='delete_task'),
     path('send-telegram/<int:task_id>/', send_task_telegram, name='send_telegram'),
     path('telegram/webhook/', telegram_webhook, name='telegram_webhook'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('profile/stats/', views.activity_stats, name='activity_stats'),
 ]
