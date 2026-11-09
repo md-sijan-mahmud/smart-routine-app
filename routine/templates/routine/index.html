@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,6 +46,17 @@
         }
         .animate-check { animation: popcheck 0.2s ease-in-out forwards; }
     </style>
+    <!-- Initial Theme Script to Prevent Flash -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300 antialiased pb-20 selection:bg-emerald-500 selection:text-white">
     
@@ -100,7 +111,7 @@
                 <!-- Theme Toggle Button -->
                 <button id="themeToggleBtn" onclick="toggleTheme()" 
                     class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all focus:outline-none cursor-pointer" title="Toggle Light/Dark Theme">
-                    <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                    <i id="themeIcon" class="fa-solid fa-moon dark:fa-sun dark:text-amber-400 text-sm"></i>
                 </button>
 
                 <!-- Profile Dropdown Component -->
@@ -541,40 +552,17 @@
             }, 200);
         }
 
-        // Theme Switcher (Light / Dark Mode)
+        // Theme Switcher (Light / Dark Mode Toggle)
         function toggleTheme() {
             const html = document.documentElement;
-            const icon = document.getElementById('themeIcon');
-
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
-                html.classList.add('light');
-                if(icon) icon.className = 'fa-solid fa-moon text-sm';
                 localStorage.setItem('theme', 'light');
             } else {
-                html.classList.remove('light');
                 html.classList.add('dark');
-                if(icon) icon.className = 'fa-solid fa-sun text-sm text-amber-500';
                 localStorage.setItem('theme', 'dark');
             }
         }
-
-        // Initial Theme Load (Checks localstorage so user preference is remembered)
-        (function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            const html = document.documentElement;
-            const icon = document.getElementById('themeIcon');
-            
-            if (savedTheme === 'dark') {
-                html.classList.remove('light');
-                html.classList.add('dark');
-                if(icon) icon.className = 'fa-solid fa-sun text-sm text-amber-500';
-            } else {
-                html.classList.remove('dark');
-                html.classList.add('light');
-                if(icon) icon.className = 'fa-solid fa-moon text-sm';
-            }
-        })();
 
         // Render initial view
         renderSchedule();
