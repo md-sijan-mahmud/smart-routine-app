@@ -545,15 +545,16 @@
         function toggleTheme() {
             const html = document.documentElement;
             const icon = document.getElementById('themeIcon');
+
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
                 html.classList.add('light');
-                icon.className = 'fa-solid fa-moon text-sm';
+                if(icon) icon.className = 'fa-solid fa-moon text-sm';
                 localStorage.setItem('theme', 'light');
             } else {
                 html.classList.remove('light');
                 html.classList.add('dark');
-                icon.className = 'fa-solid fa-sun text-sm text-amber-500';
+                if(icon) icon.className = 'fa-solid fa-sun text-sm text-amber-500';
                 localStorage.setItem('theme', 'dark');
             }
         }
@@ -563,6 +564,7 @@
             const savedTheme = localStorage.getItem('theme') || 'light';
             const html = document.documentElement;
             const icon = document.getElementById('themeIcon');
+            
             if (savedTheme === 'dark') {
                 html.classList.remove('light');
                 html.classList.add('dark');
