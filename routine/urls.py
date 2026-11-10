@@ -8,19 +8,18 @@ from .views import (
     login_view, 
     register_view, 
     logout_view,
-    edit_profile_view, 
-    activity_stats_view
+    edit_profile, 
+    activity_stats,
 )
 
 urlpatterns = [
-    path('', routine_view, name='routine_home'),
+    path('', routine_view, name='dashboard'),
     path('register/', register_view, name='register'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('delete/<int:task_id>/', delete_task, name='delete_task'),
     path('send-telegram/<int:task_id>/', send_task_telegram, name='send_telegram'),
     path('telegram/webhook/', telegram_webhook, name='telegram_webhook'),
-    path('', views.dashboard, name='dashboard'),
-    path('profile/edit/', edit_profile_view, name='edit_profile'),
-    path('profile/stats/', activity_stats_view, name='activity_stats'),
+    path('profile/edit/', edit_profile, name='edit_profile'),
+    path('profile/stats/', activity_stats, name='activity_stats'),
 ]
