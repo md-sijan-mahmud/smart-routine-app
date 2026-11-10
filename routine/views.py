@@ -155,6 +155,10 @@ def telegram_webhook(request):
     return JsonResponse({"status": "error"}, status=400)
 
 @login_required
+def dashboard(request):
+    return render(request, 'routine/index.html')
+
+@login_required
 def edit_profile(request):
     if request.method == 'POST':
         # ইউজারনেম বা ইমেইল আপডেট লজিক এখানে যুক্ত হবে
